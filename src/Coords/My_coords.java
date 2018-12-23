@@ -21,8 +21,7 @@ private double earthrhRadius = 6371000;
 			lat_change=(lon_change+180)+180;
 		}
 		Point3D p = new Point3D(lat_change, lon_change, gps.z()+local_vector_in_meter.z());
-		return p;
-	
+		return p;	
 	}
 	
 	/** computes the 3D distance (in meters) between the two gps like points */
@@ -81,7 +80,7 @@ private double earthrhRadius = 6371000;
 			
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * 
 	 * @param azimuth
@@ -91,15 +90,14 @@ private double earthrhRadius = 6371000;
 		double azimuth2 = Math.toRadians(azimuth);
 		double lat1 = Math.toRadians(p.x());
 		double lon1 = Math.toRadians(p.y());
+		double dR = distance/this.earthrhRadius;
 		
-		double new_X = Math.asin((Math.sin(lat1) * Math.cos(distance/this.earthrhRadius))  +  
-					             (Math.cos(lat1) * Math.sin(distance/this.earthrhRadius)*Math.cos(azimuth2)));
-		double new_Y = lon1 + Math.atan2(Math.sin(azimuth2)*Math.sin(distance/this.earthrhRadius)*Math.cos(lat1)
-				,Math.cos(distance/this.earthrhRadius)-Math.sin(p.y())*Math.sin(new_X) );
+		double a = Math.sin(dR) * Math.cos(lat1);
+		double lat2 = Math.asin(Math.sin(lat1)*Math.cos(dR)+a*Math.cos(azimuth2));
+		double lon2 = lon1 + Math.atan2(Math.sin(azimuth2)*a , Math.cos(dR) - Math.sin(lat1)*Math.sin(lat2));
 		
-		
-		new_X = Math.toDegrees(new_X);
-		new_Y = Math.toDegrees(new_Y);
+		double new_X = Math.toDegrees(lat2);
+		double new_Y = Math.toDegrees(lon2);
 		System.out.println(new_X + " , " + new_Y + "the coords of the full path");
 		p.setPoint(new_X, new_Y);
 		Point3D temp = new Point3D(new_X, new_Y);

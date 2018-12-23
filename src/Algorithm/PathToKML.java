@@ -2,18 +2,14 @@ package Algorithm;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 
 import com.sun.jmx.snmp.Timestamp;
 
-import GIS.My_GIS_Layer;
-import GIS.My_GIS_element;
-
-public class Game_CSVToKML {
+public class PathToKML {
 	
 	private final BufferedWriter writer;
 
@@ -23,10 +19,9 @@ public class Game_CSVToKML {
 
 
 
-	public Game_CSVToKML(String input, String output) throws IOException {
+	 public PathToKML(String input, String output) throws IOException{
 		reader = new BufferedReader(new FileReader(input));
 		writer = new BufferedWriter(new FileWriter(output));
-
 	}
 	private void writeStart() throws IOException {
 		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -56,33 +51,21 @@ public class Game_CSVToKML {
 			while (str != null) {
 				if (parsed[0].equals("P")) {
 				writer.write("<Placemark>\n");
-				writer.write("<name><![CDATA["+parsed[0]+" " + parsed[1]+"]]></name>\n"); // name of packmen and id
-				writer.write("<description> <![CDATA[BSSID: <b>"+parsed[0] +
-						"</b><br/>Capabilities: <b>"+parsed[2]+"</b><br/>Frequency: <b>"+2462+
-						"</b><br/>Timestamp: <b>" + p.getDateTime() +"</b><br/>Date: <b>"+p.getDate()+
-			"</b>]]></description><styleUrl>" +"blue"+"</styleUrl>\n");// the color of the packmen
+				writer.write(" <TimeSpan>\r\n" + 
+			
+						"<begin>"+  i +"</begin>\r\n" + 
+						 "<end>" + (i+1) +"</end>"+
+						"</TimeSpan>\r\n" + 
+						"<styleUrl>#paddle-a</styleUrl>");
 				writer.write("<Point>\r\n" + 
 						"<coordinates>" + parsed[3]+","+parsed[2]+"</coordinates></Point>\n");
 				writer.write("</Placemark>\r\n");
 				System.out.println(str);
 				i = i+1;
-				}
-				else if(parsed[0].equals("F"))  {
-					writer.write("<Placemark>\n");
-					writer.write("<name><![CDATA["+parsed[0]+" " + parsed[1]+"]]></name>\n"); // name of packmen and id
-					writer.write("<description> <![CDATA[BSSID: <b>"+parsed[0] +
-							"</b><br/>Capabilities: <b>"+parsed[2]+"</b><br/>Frequency: <b>"+2462+
-							"</b><br/>Timestamp: <b>" + p.getDateTime() +"</b><br/>Date: <b>"+p.getDate()+
-							"</b>]]></description><styleUrl>" +"blue"+"</styleUrl>\n");// the color of the packmen
-					writer.write("<Point>\r\n" + 
-							"<coordinates>" + parsed[3]+","+parsed[2]+"</coordinates></Point>\n");
-					writer.write("</Placemark>\r\n");
-					System.out.println(str);}
-				
-				
 				str = reader.readLine();
 				if (str != null)parsed = str.split(",");
 				}
+			}
 
 			
 			writer.write("</Folder>\n"
@@ -105,5 +88,6 @@ public class Game_CSVToKML {
 			}
 		}
 	}
+
 
 }

@@ -26,6 +26,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import Algorithm.GameToCsv;
 import Algorithm.Game_CSVToKML;
+import Algorithm.PathToKML;
 import Algorithm.ShortestPath;
 import Coords.My_coords;
 import Coords.coordsToPixel;
@@ -86,7 +87,7 @@ public class GuiEX3 extends JFrame implements MouseListener,ActionListener,ItemL
 		this.UPload.addActionListener(this);
 
 		//convert to Csv file from the screen
-		this.Convert_toCSV = new MenuItem("Convert to CSV file");
+		this.Convert_toCSV = new MenuItem("Convert to KML file");
 		this.Convert_toCSV.addActionListener(this);
 
 		// add play button to the menu
@@ -285,7 +286,7 @@ public class GuiEX3 extends JFrame implements MouseListener,ActionListener,ItemL
 					double[] a =  m.azimuth_elevation_dist(startpoint, endpoint);
 					System.out.println(a[0] + "," + a[2]);
 					double distance = a[2]/10;
-					//cuts the distance beetwen packman and fruit to 20 Gps points
+					//cuts the distance beetwen packman and fruit to 10 Gps points
 					for (int j = 0; j < 10; j++) {
 						System.out.println("yes");
 						this.listPackmen.get(i).add3Dfullpath(m.AddAzimuthAndVector(startpoint, a[0], distance));
@@ -359,8 +360,8 @@ public class GuiEX3 extends JFrame implements MouseListener,ActionListener,ItemL
 		if(event.getSource().equals(Convert_toCSV)) {
 			GameToCsv m = new GameToCsv(this.listPackmen);
 			try {
-				Game_CSVToKML l = new Game_CSVToKML("test.csv", "test.kml");
-				l.run();
+				PathToKML k  = new PathToKML("test.csv", "test.kml");
+				k.run();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -398,7 +399,8 @@ public class GuiEX3 extends JFrame implements MouseListener,ActionListener,ItemL
 			GuiEX3 frame = new GuiEX3();
 			frame.setVisible(true);
 			frame.setSize(frame.myImage.getWidth(), frame.myImage.getHeight());
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
+			frame.setResizable(false);
 
 		}
 		@Override
