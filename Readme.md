@@ -1,5 +1,7 @@
-Gui packmen project
+GIS packmen project
 ==================
+**EX3**
+---
 
 Author & Contributer List
 -------------------------
@@ -32,6 +34,5 @@ project instruction
 
 **Bugs**
 ----
-1. The algorithm to find the path to each fruit by each packmen is not the best and can improve
-2. In the Gui the fruits dont disapear after eaten
-3.   
+1. The algorithm to find the path to each fruit by each packmen is not the best and can improve.
+2. In the Gui the fruits dont disapear after eaten.  
