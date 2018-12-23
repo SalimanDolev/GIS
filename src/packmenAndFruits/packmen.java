@@ -1,12 +1,7 @@
 package packmenAndFruits;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import javax.imageio.ImageIO;
 
 import Coords.coordsToPixel;
 import Geom.Point3D;
@@ -16,9 +11,11 @@ public class packmen {
 	private PointPixel pixelP;
 	private Point3D gpsP;
 	private double speed;
+	private double radius;
 
 	private ArrayList<Point3D> d3path;
 	private ArrayList<PointPixel> Pixelpath;
+	private ArrayList<Point3D> fullPath;
 
 	public packmen() {
 		
@@ -27,6 +24,7 @@ public class packmen {
 		this.speed = 1;
 		this.d3path = new ArrayList<Point3D>();
 		this.Pixelpath = new ArrayList<PointPixel>();
+		this.fullPath = new ArrayList<Point3D>();
 	}
 
 	public packmen(int x, int y) {
@@ -36,6 +34,7 @@ public class packmen {
 		this.speed = 1;
 		this.d3path = new ArrayList<Point3D>();
 		this.Pixelpath = new ArrayList<PointPixel>();
+		this.fullPath = new ArrayList<Point3D>();
 	}
 
 	public void setPackmenPosition(Point3D p ) {
@@ -62,6 +61,8 @@ public class packmen {
 	public PointPixel getPixelPoint() {
 		return this.pixelP;
 	}
+	
+////////////////////////////////////////////////////////////////////	
 	public void setSpeed(double s) {
 		this.speed = s;
 	}
@@ -69,7 +70,15 @@ public class packmen {
 		return this.speed;
 	}
 
-	////////////////////////////////////////////////////////////////
+	public double getRadius() {
+		return radius;
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+
+//////////////////////////////////////////////////////////////////////////////////
 	// the GPS path
 	public void add3Dpath(Point3D p) {
 		this.d3path.add(p);
@@ -94,10 +103,29 @@ public class packmen {
 		return this.Pixelpath.get(i);
 	}
 	public int getPathSize () {
-		System.out.println(this.Pixelpath.size());
-		System.out.println(this.d3path.size());
 		return this.Pixelpath.size();
 	}
+	public int getPixelPathSize() {
+		return this.Pixelpath.size();
+	}
+	
+/////////////////////////////////////////////////////////////
+	//full gps path
+	public void add3Dfullpath(Point3D p) {
+		this.fullPath.add(p);
+	}
+
+	public Iterator<Point3D> fullpathIterator() {
+		return this.fullPath.iterator();
+	}
+
+	public Point3D getfullStep(int i ) {
+		return this.fullPath.get(i);
+	}
+	public int getfullPathSize () {
+		return this.fullPath.size();
+	}
+
 }
 
 

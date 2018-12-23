@@ -8,6 +8,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import com.sun.jmx.snmp.Timestamp;
 
 import Algorithm.CsvToGame;
@@ -17,76 +20,31 @@ import Coords.*;
 import GIS.My_GIS_Project;
 
 public class main {
-	public static void main (String [] args) {
-	/**	Point3D p = new Point3D(32.10332, 35.20904,670);
-		Point3D p1 = new Point3D(32.10635, 35.20523,650);
-		My_coords c = new My_coords();
-		double d = c.distance3d(p, p1);
-		System.out.println(p.x());
-		System.out.println(d);
-		Point3D vector= new Point3D(10, 20,10);   
-		System.out.println(c.add(p,vector));
-		double [] a = c.azimuth_elevation_dist(p, p1);
-		System.out.println("azimuth between two points: " + a[0]);
-		System.out.println("elevation between two points: " + a[1]);
-		System.out.println("the distance between two point: "+a[2]);
-      
-		Multy_CSV l = new Multy_CSV();
-		try {
-			My_GIS_Project project = new My_GIS_Project();
-			project = l.run();
-			System.out.println(project.toString());
-			System.out.println(project.toArray());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}**/
+	
+	private double earthrhRadius = 6371000;
+	
+	public void AddAzimuthAndVector(Point3D p,double azimuth,double distance) {
+		double azimuth2 = Math.toRadians(azimuth);
+		double lat1 = Math.toRadians(p.x());
+		double lon1 = Math.toRadians(p.y());
 		
-	/**	try {
-			BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\salim\\Desktop\\לימודים\\מונחה עצמים\\מטלה 3\\Ex3 (2)\\Ex3\\data\\game_1543684662657.csv"));
-			try {
-				reader.readLine();
-				String str = reader.readLine();
-				System.out.println(str);
-				String str1 [] = str.split(",");
-				System.out.println(str1[0]);
-				
-				Timestamp p = new Timestamp();
-				System.out.println(p.getDate());
-				System.out.println(p.getTimeTicks());
-				System.out.println(p.getDateTime());
-				Game_CSVToKML k = new Game_CSVToKML("C:\\Users\\salim\\Desktop\\לימודים\\מונחה עצמים\\מטלה 3\\Ex3 (2)\\Ex3\\data\\game_1543684662657.csv",
-							"C:\\\\Users\\\\salim\\\\Desktop\\\\לימודים\\\\מונחה עצמים\\\\מטלה 3\\\\Ex3 (2)\\\\Ex3\\\\data\\\\game_1543684662657.kml");
-				k.run();
-				
-				CsvToGame a = new CsvToGame();
-				a.run();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}**/
+		double new_X = Math.asin((Math.sin(lat1) * Math.cos(distance/this.earthrhRadius))  +  
+					             (Math.cos(lat1) * Math.sin(distance/this.earthrhRadius)*Math.cos(azimuth2)));
+		double new_Y = lon1 + Math.atan2(Math.sin(azimuth2)*Math.sin(distance/this.earthrhRadius)*Math.cos(lat1)
+				,Math.cos(distance/this.earthrhRadius)-Math.sin(p.y())*Math.sin(new_X) );
 		
-		
-		Point3D p = new Point3D(32.104262361370715,35.20617349546406);
-		PointPixel pp = new PointPixel();
-		MapOptimizer m;
-		try {
-			m = new MapOptimizer();
-			int x_pixel = (int) ((p.x()*m.myImage.getWidth())/360);
-			int y_pixel = (int) ((p.x()*m.myImage.getHeight())/180);
-			pp.setPointpixel(x_pixel, y_pixel);
-			System.out.println(pp.GetX() +"," +pp.GetY());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		new_X = Math.toDegrees(new_X);
+		new_Y = Math.toDegrees(new_Y);
 
+		p.setPoint(new_X, new_Y);
+	}
+	public static void main (String [] args) {
+
+		Point3D p = new Point3D(32.104262361370715,35.20617349546406);
+		My_coords m = new My_coords();
+		m.AddAzimuthAndVector(p, 180, 200);
+		System.out.println(p.x() + " , " +p.y());
+		
 	}
 }
 

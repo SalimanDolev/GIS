@@ -15,21 +15,21 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
-
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import Algorithm.GameToCsv;
+import Algorithm.Game_CSVToKML;
 import Algorithm.ShortestPath;
 import Coords.My_coords;
 import Coords.coordsToPixel;
 import Geom.Point3D;
-import Pixel.PointPixel;
 import packmenAndFruits.fruits;
 import packmenAndFruits.packmen;
 
@@ -47,13 +47,16 @@ public class GuiEX3 extends JFrame implements MouseListener,ActionListener,ItemL
 	Menu game;
 	MenuItem path;
 	MenuItem UPload;
-	
+	MenuItem Convert_toCSV;
+	MenuItem Play;
+
 	BufferedReader reader;
-	
+
 	private boolean addFruit = false;
 	private boolean addPackmen = false;
 	private boolean Start_Draw_Path = false;
 	private boolean upload = false;
+	private boolean play = false;
 	Image fruitIcon;
 	Image packmenIcon;
 
@@ -77,12 +80,18 @@ public class GuiEX3 extends JFrame implements MouseListener,ActionListener,ItemL
 		this.game = new Menu("Game");
 		this.path = new MenuItem("Calculte path");
 		this.path.addActionListener(this);
-		
+
 		// Upload a game
 		this.UPload = new MenuItem("Upload");
 		this.UPload.addActionListener(this);
-		
 
+		//convert to Csv file from the screen
+		this.Convert_toCSV = new MenuItem("Convert to CSV file");
+		this.Convert_toCSV.addActionListener(this);
+
+		// add play button to the menu
+		this.Play = new MenuItem("Play game");
+		this.Play.addActionListener(this);
 
 		menuBar.add(game);
 		this.game.add(path);
@@ -91,6 +100,8 @@ public class GuiEX3 extends JFrame implements MouseListener,ActionListener,ItemL
 		this.menu.add(item2);
 		this.setMenuBar(menuBar);
 		this.game.add(UPload);
+		this.game.add(Convert_toCSV);
+		this.game.add(Play);
 
 		try {
 			this.myImage = ImageIO.read(new File("C:\\Users\\salim\\Desktop\\לימודים\\Projects\\GIS_Ex02\\Ariel1.png"));
@@ -132,30 +143,52 @@ public class GuiEX3 extends JFrame implements MouseListener,ActionListener,ItemL
 			for(int i=0 ; i<listPackmen.size() ;i++)
 			{
 				int x_pacman =(int) listPackmen.get(i).getPixelPoint().GetX();
+				System.out.println("1");
 				int y_pacman = (int)listPackmen.get(i).getPixelPoint().GetY();
+				System.out.println("2");
 				g.drawImage(packmenIcon,x_pacman, y_pacman, 25, 25,this);
+			}
+		}	
+		if(play) {
+			try {
+				for (int j = 0; j < this.listPackmen.size(); j++) {
+					for (int j2 = 0; j2 < this.listPackmen.get(j).getfullPathSize(); j2++) {
+						this.listPackmen.get(j).setPackmenPosition(this.listPackmen.get(j).getfullStep(j2));
+						int x_pacman =(int) listPackmen.get(j).getPixelPoint().GetX();
+						System.out.println("1");
+						int y_pacman = (int)listPackmen.get(j).getPixelPoint().GetY();
+						System.out.println("2");
+						g.drawImage(packmenIcon,x_pacman, y_pacman, 25, 25,this);
+						Thread.sleep(500);
+						System.out.println("onr second");
+					}
+				}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		if(Start_Draw_Path) {
 			for (int j = 0; j < listPackmen.size(); j++) { 
 				int x_path = (int) listPackmen.get(j).getPixelPoint().GetX();
 				int y_path = (int) listPackmen.get(j).getPixelPoint().GetY();
-				
-				
-				int x_next = (int) listPackmen.get(j).getPixelStep(0).GetX();
-				int y_next = (int) listPackmen.get(j).getPixelStep(0).GetY();
-				g.drawLine(x_path,y_path,x_next,y_next);
-				for (int i = 0 ; i < listPackmen.get(j).getPathSize() - 1 ;i++) {
-					x_path = (int) listPackmen.get(j).getPixelStep(i).GetX();
-					y_path = (int) listPackmen.get(j).getPixelStep(i).GetY();
-					
-					
-					x_next = (int) listPackmen.get(j).getPixelStep(i+1).GetX();
-					y_next = (int) listPackmen.get(j).getPixelStep(i+1).GetY();
-					System.out.println(x_path +", "+y_path);
-					System.out.println(x_next +", "+y_next);
+
+				// need to add when the path is emoty dont do nothing
+				if(listPackmen.get(j).getPixelPathSize() > 0) {
+					int x_next = (int) listPackmen.get(j).getPixelStep(0).GetX();
+					int y_next = (int) listPackmen.get(j).getPixelStep(0).GetY();
 					g.drawLine(x_path,y_path,x_next,y_next);
-					System.out.println("yes");
+					for (int i = 0 ; i < listPackmen.get(j).getPathSize() - 1 ;i++) {
+						x_path = (int) listPackmen.get(j).getPixelStep(i).GetX();
+						y_path = (int) listPackmen.get(j).getPixelStep(i).GetY();
+
+
+						x_next = (int) listPackmen.get(j).getPixelStep(i+1).GetX();
+						y_next = (int) listPackmen.get(j).getPixelStep(i+1).GetY();
+						System.out.println(x_path +", "+y_path);
+						System.out.println(x_next +", "+y_next);
+						g.drawLine(x_path,y_path,x_next,y_next);
+					}
 				}
 			}
 		}
@@ -214,12 +247,16 @@ public class GuiEX3 extends JFrame implements MouseListener,ActionListener,ItemL
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
+		/////////////////////////////////////////////////////////////////////////////////////////////////
+		//Drawing packmen
 		if(event.getSource().equals(item1))
 		{
 			addPackmen = true;
 			addFruit = false;
 			System.out.println("Press packmen");
 		}
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+		// Drawing fruit
 		if(event.getSource().equals(item2))
 		{
 			addPackmen = false;
@@ -227,7 +264,8 @@ public class GuiEX3 extends JFrame implements MouseListener,ActionListener,ItemL
 			System.out.println("Press fruit");
 		}
 
-		///////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+		// Adding path way to every packmen
 		if(event.getSource().equals(path)) {
 			System.out.println("Adding path to the screnn");
 			Start_Draw_Path = true;
@@ -235,65 +273,137 @@ public class GuiEX3 extends JFrame implements MouseListener,ActionListener,ItemL
 				ShortestPath p = new ShortestPath();
 				p.run(listPackmen,listFruits );
 			}
-			System.out.println("1");
 			repaint();
+			//////////////////////////////////////////////////////////////
+			//calculate  the distance from packmen to a fruit and make it less long, to show it after all in google maps 
+			My_coords m = new My_coords();
+			for (int i = 0; i < listPackmen.size(); i++) {
+				if(this.listPackmen.get(i).getPathSize() > 0) {
+					Point3D startpoint = this.listPackmen.get(i).get3Dpoint();
+					Point3D endpoint = this.listPackmen.get(i).getStep(0);
+					this.listPackmen.get(i).add3Dfullpath(startpoint);
+					double[] a =  m.azimuth_elevation_dist(startpoint, endpoint);
+					System.out.println(a[0] + "," + a[2]);
+					double distance = a[2]/10;
+					//cuts the distance beetwen packman and fruit to 20 Gps points
+					for (int j = 0; j < 10; j++) {
+						System.out.println("yes");
+						this.listPackmen.get(i).add3Dfullpath(m.AddAzimuthAndVector(startpoint, a[0], distance));
+					}
+
+					for (int j = 0; j < listPackmen.get(i).getPathSize()-1; j++) {
+						System.out.println("no");
+						startpoint = this.listPackmen.get(i).getStep(j);
+						endpoint = this.listPackmen.get(i).getStep(j+1);
+						a =  m.azimuth_elevation_dist(startpoint, endpoint);
+						distance = a[2]/10;
+						//cuts the distance beetwen packman and fruit to 20 Gps points
+						for (int j2 = 0; j2 < 10; j2++) {
+							System.out.println("no");
+							this.listPackmen.get(i).add3Dfullpath(m.AddAzimuthAndVector(startpoint, a[0], distance));
+						}
+					}
+					for (int j = 0; j < this.listPackmen.get(0).getfullPathSize(); j++) {
+						System.out.println("step " + j + ":" +this.listPackmen.get(0).getfullStep(j).x() +"," +this.listPackmen.get(0).getfullStep(j).y()) ;
+					}
+				}
+			}
 		}
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//Uploading a game from CSV
 		if (event.getSource().equals(UPload)) {
 			this.upload = true;
 			try {
-				reader = new BufferedReader(new FileReader("C:\\\\Users\\\\salim\\\\Desktop\\\\לימודים\\\\מונחה עצמים\\\\מטלה 3\\\\Ex3 (2)\\\\Ex3\\\\data\\\\game_1543684662657.csv"));
+				//chhose a file to upload from the comuter
+				JFileChooser chooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(
+						"CSV files", "csv");
+				chooser.setFileFilter(filter);
+				int returnVal = chooser.showOpenDialog(null);
+				if(returnVal == JFileChooser.APPROVE_OPTION) {
+					System.out.println("You chose to open this file: " +
+							chooser.getSelectedFile().getName());
+				}
+				reader = new BufferedReader(new FileReader(chooser.getCurrentDirectory().getPath()+ "\\" + chooser.getSelectedFile().getName()));
 				String str = reader.readLine();
 				str = reader.readLine();
-				System.out.println(str);
 				String parsed[] = str.split(",");
-				System.out.println(Arrays.toString(parsed));
-				System.out.println(parsed[0]);
 				while (str != null) {
+					System.out.println(str);
 					if(parsed[0].equals("P")) {
-						System.out.println("1");
 						packmen p = new packmen();
 						Point3D pointGps = new Point3D(Double.parseDouble(parsed[2]) ,Double.parseDouble(parsed[3]));
-						System.out.println(p.get3Dpoint().x() +"," + p.get3Dpoint().y());
-						System.out.println(p.getPixelPoint().GetX() +"," + p.getPixelPoint().GetY());
 						p.setPackmenPosition(pointGps);
 						p.setSpeed(Double.parseDouble(parsed[5]));
 						this.listPackmen.add(p);
 					}
 					if(parsed[0].equals("F")) {
 						fruits f = new fruits();
-						Point3D p = new Point3D(Double.parseDouble(parsed[2]) ,Double.parseDouble(parsed[3]));
-						f.setFruitPositionFromGps(p);
+						Point3D p2 = new Point3D(Double.parseDouble(parsed[2]) ,Double.parseDouble(parsed[3]));
+						f.setFruitPositionFromGps(p2);
 						f.setWeight(Integer.parseInt(parsed[5]));
 						this.listFruits.add(f);
 					}
 					str = reader.readLine();
 					if(str!= null ) parsed = str.split(",");
 				}
-				
+
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			repaint();
 		}
+		///////////////////////////////////////////////////////////////////////////////////////
+		//convert from game to csv
+		if(event.getSource().equals(Convert_toCSV)) {
+			GameToCsv m = new GameToCsv(this.listPackmen);
+			try {
+				Game_CSVToKML l = new Game_CSVToKML("test.csv", "test.kml");
+				l.run();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(event.getSource().equals(Play)) {
+			play = true;
+			repaint();
+		}
+			//try {
+			//	for (int j = 0; j < this.listPackmen.size(); j++) {
+			//		for (int j2 = 0; j2 < this.listPackmen.get(j).getfullPathSize(); j2++) {
+			//			this.listPackmen.get(j).setPackmenPosition(this.listPackmen.get(j).getfullStep(j2));
 
+			//			System.out.println(this.listPackmen.get(j).getPixelPoint().GetX() +","+ this.listPackmen.get(j).getPixelPoint().GetY());
+			//			repaint();
+			//			Thread.sleep(500);
+			//			System.out.println("onr second");
+			//		}
+			//	}
+			//} catch (InterruptedException e) {
+			//	// TODO Auto-generated catch block
+			//	e.printStackTrace();
+			//}
+			//}
+
+		}
+
+
+
+
+
+		public static void main(String[]args) {
+
+			GuiEX3 frame = new GuiEX3();
+			frame.setVisible(true);
+			frame.setSize(frame.myImage.getWidth(), frame.myImage.getHeight());
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		}
+		@Override
+		public void itemStateChanged(ItemEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
 	}
-
-
-	public static void main(String[]args) {
-
-		GuiEX3 frame = new GuiEX3();
-		frame.setVisible(true);
-		frame.setSize(frame.myImage.getWidth(), frame.myImage.getHeight());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
-
-
-	}
-	@Override
-	public void itemStateChanged(ItemEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-}

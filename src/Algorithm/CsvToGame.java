@@ -14,7 +14,7 @@ public class CsvToGame {
 	
 	public CsvToGame() {
 		try {
-			reader = new BufferedReader(new FileReader("C:\\\\Users\\\\salim\\\\Desktop\\\\לימודים\\\\מונחה עצמים\\\\מטלה 3\\\\Ex3 (2)\\\\Ex3\\\\data\\\\game_1543684662657.csv"));
+			reader = new BufferedReader(new FileReader("C:\\\\Users\\\\salim\\\\Desktop\\\\לימודים\\\\מונחה עצמים\\\\מטלה 3\\\\Ex3 (2)\\\\Ex3\\\\data\\\\game_1543693911932_a.csv"));
 			
 			GuiEX3 screen = new GuiEX3();
 		} catch (FileNotFoundException e) {

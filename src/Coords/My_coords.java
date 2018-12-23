@@ -80,5 +80,30 @@ private double earthrhRadius = 6371000;
 		else throw new RuntimeException("** Error: Point3D coordinates wrong **");
 			
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////
+	/**
+	 * 
+	 * @param azimuth
+	 * @param distance
+	 */
+	public Point3D AddAzimuthAndVector(Point3D p,double azimuth,double distance) {
+		double azimuth2 = Math.toRadians(azimuth);
+		double lat1 = Math.toRadians(p.x());
+		double lon1 = Math.toRadians(p.y());
+		
+		double new_X = Math.asin((Math.sin(lat1) * Math.cos(distance/this.earthrhRadius))  +  
+					             (Math.cos(lat1) * Math.sin(distance/this.earthrhRadius)*Math.cos(azimuth2)));
+		double new_Y = lon1 + Math.atan2(Math.sin(azimuth2)*Math.sin(distance/this.earthrhRadius)*Math.cos(lat1)
+				,Math.cos(distance/this.earthrhRadius)-Math.sin(p.y())*Math.sin(new_X) );
+		
+		
+		new_X = Math.toDegrees(new_X);
+		new_Y = Math.toDegrees(new_Y);
+		System.out.println(new_X + " , " + new_Y + "the coords of the full path");
+		p.setPoint(new_X, new_Y);
+		Point3D temp = new Point3D(new_X, new_Y);
+		return temp;
+	}
 
 }

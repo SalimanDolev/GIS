@@ -1,7 +1,10 @@
 package Algorithm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import Coords.My_coords;
+import Geom.Point3D;
 import packmenAndFruits.fruits;
 import packmenAndFruits.packmen;
 
@@ -34,8 +37,8 @@ public class ShortestPath {
 						MinimalDistancePackmen = j+1;
 					}
 				}
-				temp_p.get(MinimalDistancePackmen).setPackmenPosition(temp_f.get(i).get3Dpoint());// move the packmen to the fruit position.
-				temp_p.get(MinimalDistancePackmen).setPackmenPosition(temp_f.get(i).getPixelPoint());
+				//temp_p.get(MinimalDistancePackmen).setPackmenPosition(temp_f.get(i).get3Dpoint());// move the packmen to the fruit position.
+				//temp_p.get(MinimalDistancePackmen).setPackmenPosition(temp_f.get(i).getPixelPoint());
 				temp_p.get(MinimalDistancePackmen).add3Dpath(temp_f.get(i).get3Dpoint());// add the fruit position to the packmen data.
 				temp_p.get(MinimalDistancePackmen).addPixelPath(temp_f.get(i).getPixelPoint());
 			}
